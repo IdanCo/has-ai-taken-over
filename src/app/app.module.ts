@@ -7,10 +7,12 @@ import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideFunctions,getFunctions } from '@angular/fire/functions';
+import { MonitorComponent } from './monitor/monitor.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MonitorComponent
   ],
   imports: [
     BrowserModule,
