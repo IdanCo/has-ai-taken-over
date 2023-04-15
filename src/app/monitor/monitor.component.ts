@@ -1,5 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {Functions, httpsCallableData} from "@angular/fire/functions";
+import {AnalysisData} from "../../../functions/src/types/analysis-data";
 
 @Component({
   selector: 'app-monitor',
@@ -8,13 +9,17 @@ import {Functions, httpsCallableData} from "@angular/fire/functions";
 })
 export class MonitorComponent implements OnInit {
   private functions: Functions = inject(Functions);
+  res?: AnalysisData;
 
   constructor() {
   }
 
   ngOnInit() {
-    const yadaFunction = httpsCallableData(this.functions, 'addNumbers');
-    yadaFunction({ number1: 4, number2: 7 }).toPromise().then(res => console.info(res));
+    const yadaFunction = httpsCallableData<unknown, AnalysisData>(this.functions, 'analyze');
+    yadaFunction({ }).toPromise().then(res => {
+      console.info(res);
+      this.res = res
+    });
   }
 
 }
