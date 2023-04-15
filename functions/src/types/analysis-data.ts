@@ -1,9 +1,9 @@
 import { Timestamp } from "firebase-admin/firestore";
-import {NewsApiResponse} from "./news-api-response";
 import {OpenAiResponse} from "./openai-response";
+import {GoogleNewsArticle} from "./google-news-rss";
 
 export interface AnalysisData {
-  newsApiResponse: NewsApiResponse,
+  articles: GoogleNewsArticle[],
   openAiResponse: OpenAiResponse,
   timestamp: Timestamp,
 }

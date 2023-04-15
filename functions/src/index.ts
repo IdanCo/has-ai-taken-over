@@ -3,9 +3,10 @@ import axios from "axios";
 import { Configuration, OpenAIApi } from 'openai';
 import * as Firestore from '@google-cloud/firestore';
 import {logger} from "firebase-functions";
-import {NewsApiResponse} from "./types/news-api-response";
 import {OpenAiResponse} from "./types/openai-response";
 import {AnalysisData} from "./types/analysis-data";
+import {Parser} from "xml2js";
+import {GoogleNewsArticle} from "./types/google-news-rss";
 
 const firestore = new Firestore.Firestore();
 
@@ -13,12 +14,21 @@ export const analyze = functions
   .runWith({ secrets: ["OPANAI_KEY", 'NEWSAPI_KEY'] })
   .https.onCall(async (data, context) => {
     // Fetch the latest AI headlines
-    const newsAPIKey = process.env.NEWSAPI_KEY;
-    const newsAPIUrl = `https://newsapi.org/v2/everything?q=Artificial%20Intelligence&pageSize=10&sortBy=relevancy&apiKey=${newsAPIKey}`;
-    const newsResponse = await axios.get<NewsApiResponse>(newsAPIUrl);
-    logger.info('news data', newsResponse.data);
-    const headlines = newsResponse.data.articles.map((article: any) => article.title).join('. ');
-    logger.info('headlines', headlines);
+    const googleNewsUrl = 'https://news.google.com/rss/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKSlRDZ0FQAQ/sections/CAQiR0NCQVNMd29JTDIwdk1EZGpNWFlTQldWdUxVZENHZ0pKVENJTkNBUWFDUW9ITDIwdk1HMXJlaW9KRWdjdmJTOHdiV3Q2S0FBKi4IACoqCAoiJENCQVNGUW9JTDIwdk1EZGpNWFlTQldWdUxVZENHZ0pKVENnQVABUAE?hl=en-US';
+    const newsResponse = await axios.get(googleNewsUrl, { responseType: 'text' });
+
+    const parser = new Parser();
+    const parsedXml = await parser.parseStringPromise(newsResponse.data);
+    const articles: GoogleNewsArticle[] = (parsedXml.rss.channel[0].item as [])
+      .slice(0, 10)
+      .map((article: any) => ({ title: article.title, link: article.link, pubDate: article.pubDate }))
+    logger.info('articles', {articles})
+
+    const headlines = articles
+      .map((article: any) => article.title)
+      .join('. ');
+
+    logger.info('headlines', {headlines})
 
     const configuration = new Configuration({ apiKey: process.env.OPANAI_KEY });
     const openaiApi = new OpenAIApi(configuration);
@@ -48,7 +58,7 @@ export const analyze = functions
 
     // Save the OpenAI response and headlines to Firestore
     const analysisData: AnalysisData = {
-      newsApiResponse: newsResponse.data,
+      articles,
       openAiResponse,
       timestamp: Firestore.Timestamp.now(),
     };

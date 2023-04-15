@@ -2,7 +2,7 @@
 {{ res?.openAiResponse | json }}
 
 <ul>
-  <li *ngFor="let article of res?.newsApiResponse?.articles">
-    {{ article.title }}
+  <li *ngFor="let article of res?.articles">
+    <a [href]="article.link">{{ article.title }}</a>
   </li>
 </ul>
