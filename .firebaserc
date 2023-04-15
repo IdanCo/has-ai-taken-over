@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "has-ai-taken-over": {
+      "hosting": {
+        "has-ai-taken-over": [
+          "has-ai-taken-over"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "has-ai-taken-over"
+  }
+}

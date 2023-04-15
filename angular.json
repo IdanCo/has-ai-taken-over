@@ -103,6 +103,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "has-ai-taken-over:build:production",
+            "firebaseProject": "has-ai-taken-over",
+            "firebaseHostingSite": "has-ai-taken-over"
+          }
         }
       }
     }
