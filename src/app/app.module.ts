@@ -8,6 +8,7 @@ import { environment } from '../environments/environment';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import {provideFunctions, getFunctions, Functions, connectFunctionsEmulator} from '@angular/fire/functions';
 import { MonitorComponent } from './monitor/monitor.component';
+import {NgxTypedJsModule} from "ngx-typed-js";
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { MonitorComponent } from './monitor/monitor.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgxTypedJsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     provideFunctions(() => {

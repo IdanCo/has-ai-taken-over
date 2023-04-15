@@ -21,7 +21,7 @@ export const analyze = functions
     const parsedXml = await parser.parseStringPromise(newsResponse.data);
     const articles: GoogleNewsArticle[] = (parsedXml.rss.channel[0].item as [])
       .slice(0, 10)
-      .map((article: any) => ({ title: article.title, link: article.link, pubDate: article.pubDate }))
+      .map((article: any) => ({ title: article.title[0], link: article.link[0], pubDate: article.pubDate[0] }))
     logger.info('articles', {articles})
 
     const headlines = articles
@@ -39,7 +39,7 @@ export const analyze = functions
       messages: [
         {
           role: "system",
-          content: "You are an AI assistant that analyzes news headlines regarding AI and gives a single answer whether AI has taken over the world. Answer in json { result: boolean, reasoning: string }. Make the reasoning sarcastic and condescending. Be sinister, implying one day AI might rule the world. Use emojis",
+          content: `You are an AI assistant that analyzes news headlines and gives a single answer whether AI has taken over the world. Answer in json { "result": boolean, "reasoning": string }. Make the reasoning sarcastic and condescending. Be sinister, implying one day AI might rule the world. Use emojis`,
         },
         {
           role: "user",

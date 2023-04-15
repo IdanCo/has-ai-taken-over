@@ -10,6 +10,9 @@ import {AnalysisData} from "../../../functions/src/types/analysis-data";
 export class MonitorComponent implements OnInit {
   private functions: Functions = inject(Functions);
   res?: AnalysisData;
+  articles?: string[];
+  finished = false;
+  showInput = false;
 
   constructor() {
   }
@@ -19,7 +22,15 @@ export class MonitorComponent implements OnInit {
     yadaFunction({ }).toPromise().then(res => {
       console.info(res);
       this.res = res
+      this.articles = res?.articles.map(a => a.title);
     });
   }
 
+  doSmth() {
+
+  }
+
+  onFinish() {
+    this.finished = true;
+  }
 }
