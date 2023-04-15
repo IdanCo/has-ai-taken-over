@@ -9,6 +9,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import {provideFunctions, getFunctions, Functions, connectFunctionsEmulator} from '@angular/fire/functions';
 import { MonitorComponent } from './monitor/monitor.component';
 import {NgxTypedJsModule} from "ngx-typed-js";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import {NgxTypedJsModule} from "ngx-typed-js";
       }
       return functions
     }),
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,25 +1,32 @@
-<h2 class="text-center">
+<h4 class="text-center my-3" style="letter-spacing: 2px">
   Has A.I. Taken Over the World?
-</h2>
+</h4>
 
-<ng-container *ngIf="!res">
-  <ngx-typed-js [strings]="['Analyzing...']" [loop]="true">
-    <h1 class="typing"></h1>
-  </ngx-typed-js>
-</ng-container>
+<div class="text-center">
+  <ng-container *ngIf="!res">
+    <ngx-typed-js [strings]="['Analyzing...']" [loop]="true">
+      <h1 class="typing d-inline-block"></h1>
+    </ngx-typed-js>
+  </ng-container>
 
-<ng-container *ngIf="res">
-  <ngx-typed-js [strings]="['Nope!']" [showCursor]="false">
-    <h1 class="typing"></h1>
-  </ngx-typed-js>
-</ng-container>
+  <ng-container *ngIf="res">
+    <ngx-typed-js [strings]="['Nope!']" [showCursor]="false">
+      <h1 class="typing d-inline-block mb-5"></h1>
+    </ngx-typed-js>
+  </ng-container>
+</div>
+
 
 <ngx-typed-js *ngIf="res?.openAiResponse?.reasoning as reasoning"
+              [typeSpeed]="20"
+              [startDelay]="1000"
               [strings]="[reasoning]" (completed)="onFinish()">
   <span class="typing"></span>
 </ngx-typed-js>
 
-<button class="" *ngIf="finished" (click)="showInput = true">Show Input</button>
+<div class="text-center">
+  <button class="btn btn-light my-5" *ngIf="finished" (click)="showInput = true">Show Input</button>
+</div>
 
 <ul *ngIf="showInput">
   <li *ngFor="let article of res?.articles">
