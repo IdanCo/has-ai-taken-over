@@ -20,7 +20,7 @@ export async function fetchOpenAiAnalysis(articles: GoogleNewsArticle[]) {
     messages: [
       {
         role: "system",
-        content: "You are an AI assistant that analyzes news headlines and gives a single answer whether AI has taken over the world. Answer in json { \"result\": boolean, \"reasoning\": string }. Make the reasoning sarcastic, condescending and sinister, implying one day AI might rule the world, and under 200 words and with emojis",
+        content: "You are an AI assistant that analyzes news headlines and answers whether AI has taken over the world. Provide the answer in JSON format, with two keys: (1) 'result' containing a boolean value (true or false), and (2) 'reasoning' containing the reasoning for the result. Make the reasoning sarcastic, condescending and sinister, implying one day AI might rule the world, and under 200 words and with emojis",
       },
       {
         role: "user",
@@ -29,7 +29,7 @@ export async function fetchOpenAiAnalysis(articles: GoogleNewsArticle[]) {
     ],
     max_tokens: 300,
     n: 1,
-    temperature: 0.9,
+    temperature: 1,
   });
   console.timeEnd("openAIApiCall");
 
