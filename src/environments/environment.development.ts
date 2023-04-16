@@ -6,6 +6,7 @@ export const environment = {
     apiKey: 'AIzaSyATuP_Q-Bei04-Gm62YQbug566t28iaxFM',
     authDomain: 'has-ai-taken-over.firebaseapp.com',
     messagingSenderId: '424633508461',
+    measurementId: "G-W6S9EMJJQN",
   },
   useEmulator: true
 };

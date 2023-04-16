@@ -10,6 +10,7 @@ import {provideFunctions, getFunctions, Functions, connectFunctionsEmulator} fro
 import { MonitorComponent } from './monitor/monitor.component';
 import {NgxTypedJsModule} from "ngx-typed-js";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {getAnalytics, provideAnalytics} from "@angular/fire/analytics";
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
       }
       return functions
     }),
+    provideAnalytics(() => getAnalytics()),
     NgbModule,
   ],
   providers: [],
