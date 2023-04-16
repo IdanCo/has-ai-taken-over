@@ -2,7 +2,8 @@ import {Component, inject, OnInit} from '@angular/core';
 import {Functions, httpsCallableData} from "@angular/fire/functions";
 import {AnalysisData} from "../../../functions/src/types/analysis-data";
 import {collection, Firestore, getDocs, limit, orderBy, query, startAt} from "@angular/fire/firestore";
-import {BehaviorSubject, Subject} from "rxjs";
+import {Subject} from "rxjs";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-monitor',
@@ -18,13 +19,17 @@ export class MonitorComponent implements OnInit {
   isFinished = false;
   showInput = false;
   isLoading = true;
+  useEmulator = environment.useEmulator;
 
   constructor() {
-    this.fetchRandomDocumentByLastHour().then(res => {
-      console.info(1111, res.timestamp.toDate())
-      this.res = res;
-      this.headlines = res?.articles.map(a => a.title);
-    });
+    if (environment.useEmulator) {
+      this.manualRun();
+    } else {
+      this.fetchRandomDocumentByLastHour().then(res => {
+        this.res = res;
+        this.headlines = res?.articles.map(a => a.title);
+      });
+    }
   }
 
   ngOnInit() {
@@ -63,15 +68,12 @@ export class MonitorComponent implements OnInit {
     return randomDocSnapshot.data() as AnalysisData;
   }
 
-  manualRun() {
+  async manualRun() {
     this.isLoading = true;
     this.res = undefined;
 
     const analyze = httpsCallableData<unknown, AnalysisData>(this.functions, 'analyze');
-    analyze({ }).toPromise().then(res => {
-      console.info(res);
-      this.res = res
-      this.headlines = res?.articles.map(a => a.title);
-    });
+    this.res = await analyze({ }).toPromise()
+    this.headlines = this.res?.articles.map(a => a.title);
   }
 }
