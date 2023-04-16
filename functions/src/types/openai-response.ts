@@ -1,1 +1,1 @@
-export interface OpenAiResponse { result: boolean; reasoning: string };
+export interface OpenAiResponse { result: boolean; reasoning: string }

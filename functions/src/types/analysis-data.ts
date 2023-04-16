@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase-admin/firestore";
+import {Timestamp} from "firebase-admin/firestore";
 import {OpenAiResponse} from "./openai-response";
 import {GoogleNewsArticle} from "./google-news-rss";
 
