@@ -12,11 +12,24 @@ export async function fetchLatestNews() {
 
   const parser = new Parser();
   const parsedXml = await parser.parseStringPromise(newsResponse.data);
-  const articles: GoogleNewsArticle[] = (parsedXml.rss.channel[0].item as [])
-    .slice(0, 10)
-    .map((article: any) =>
-      ({title: article.title[0], link: article.link[0], pubDate: article.pubDate[0]}));
+  const allItems = parsedXml.rss.channel[0].item as [];
+  const randomItems = getRandomElements(allItems, 10);
+  const articles: GoogleNewsArticle[] = randomItems
+    .map((article: any) => ({title: article.title[0], link: article.link[0], pubDate: article.pubDate[0]}));
   logger.info("articles", {articles});
 
   return articles;
+}
+
+function getRandomElements(arr: any[], count: number) {
+  const result = [];
+  const tempArray = arr.slice(); // Create a copy of the original array to avoid modifying it
+
+  for (let i = 0; i < count; i++) {
+    const randomIndex = Math.floor(Math.random() * tempArray.length);
+    const randomElement = tempArray.splice(randomIndex, 1)[0];
+    result.push(randomElement);
+  }
+
+  return result;
 }
