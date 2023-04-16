@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import {provideFirestore, getFirestore, connectFirestoreEmulator} from '@angular/fire/firestore';
 import {provideFunctions, getFunctions, Functions, connectFunctionsEmulator} from '@angular/fire/functions';
 import { MonitorComponent } from './monitor/monitor.component';
 import {NgxTypedJsModule} from "ngx-typed-js";
@@ -21,7 +21,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     AppRoutingModule,
     NgxTypedJsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
+    provideFirestore(() => {
+      const firestore = getFirestore()
+      if (environment.useEmulator) {
+        connectFirestoreEmulator(firestore, 'localhost', 8080)
+      }
+      return firestore;
+    }),
     provideFunctions(() => {
       const functions = getFunctions();
       if (environment.useEmulator) {

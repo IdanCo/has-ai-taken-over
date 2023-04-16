@@ -7,6 +7,7 @@ import {OpenAiResponse} from "./types/openai-response";
 import {AnalysisData} from "./types/analysis-data";
 import {Parser} from "xml2js";
 import {GoogleNewsArticle} from "./types/google-news-rss";
+import { Timestamp } from 'firebase/firestore';
 
 const firestore = new Firestore.Firestore();
 
@@ -15,15 +16,7 @@ export const scheduledAnalysis = functions
   .pubsub.schedule('every 1 minute').onRun(async (context) => {
     const articles = await fetchLatestNews();
     const openAiResponse = await fetchOpenAiAnalysis(articles)
-
-    // Save the OpenAI response and headlines to Firestore
-    const analysisData: AnalysisData = {
-      articles,
-      openAiResponse,
-      timestamp: Firestore.Timestamp.now(),
-    };
-
-    await firestore.collection("analysis").add(analysisData);
+    await saveAnalysis(articles, openAiResponse);
   })
 
 export const analyze = functions
@@ -31,15 +24,7 @@ export const analyze = functions
   .https.onCall(async (data, context) => {
     const articles = await fetchLatestNews();
     const openAiResponse = await fetchOpenAiAnalysis(articles)
-
-    // Save the OpenAI response and headlines to Firestore
-    const analysisData: AnalysisData = {
-      articles,
-      openAiResponse,
-      timestamp: Firestore.Timestamp.now(),
-    };
-
-    await firestore.collection("analysis").add(analysisData);
+    const analysisData = saveAnalysis(articles, openAiResponse);
 
     return analysisData;
   });
@@ -105,4 +90,22 @@ async function fetchOpenAiAnalysis(articles: GoogleNewsArticle[]) {
   }
 
   return openAiResponse;
+}
+
+async function saveAnalysis(articles: GoogleNewsArticle[], openAiResponse: OpenAiResponse) {
+  const date = new Date();
+  date.setSeconds(date.getSeconds() + 86400);
+  const tomorrowTimestamp = Timestamp.fromDate(date);
+
+  // Save the OpenAI response and headlines to Firestore
+  const analysisData: AnalysisData = {
+    articles,
+    openAiResponse,
+    timestamp: Timestamp.now(),
+    removeAt: tomorrowTimestamp,
+  };
+
+  await firestore.collection("analysis").add(analysisData);
+
+  return analysisData;
 }
