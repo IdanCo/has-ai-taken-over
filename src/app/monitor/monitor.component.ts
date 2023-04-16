@@ -33,4 +33,8 @@ export class MonitorComponent implements OnInit {
   onFinish() {
     this.finished = true;
   }
+
+  refresh() {
+    location.reload();
+  }
 }

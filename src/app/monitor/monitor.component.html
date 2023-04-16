@@ -2,10 +2,10 @@
   Has A.I. Taken Over the World?
 </h4>
 
-<div class="text-center">
+<div class="text-center digital">
   <ng-container *ngIf="!res">
-    <ngx-typed-js [strings]="['Analyzing...']" [loop]="true">
-      <h1 class="typing d-inline-block"></h1>
+    <ngx-typed-js [strings]="['Analyzing...']" [showCursor]="false" [loop]="true">
+      <h1 class="typing d-inline-block mb-5"></h1>
     </ngx-typed-js>
   </ng-container>
 
@@ -24,8 +24,17 @@
   <span class="typing"></span>
 </ngx-typed-js>
 
+<div class="alert alert-warning mt-5" role="alert" *ngIf="finished" >
+  <h4 class="alert-heading">Disclaimer</h4>
+  <p>This analysis was done using AI, so it can't be fully trusted. Review the input data it used, or run the analysis again</p>
+  <hr>
+  <div class="text-end">
+    <button class="btn btn-outline-primary me-2" (click)="showInput = !showInput">{{ showInput ? 'Hide' : 'Review' }} input data</button>
+    <button class="btn btn-outline-danger" (click)="refresh()">Ru-run analysis</button>
+  </div>
+</div>
+
 <div class="text-center">
-  <button class="btn btn-light my-5" *ngIf="finished" (click)="showInput = true">Show Input</button>
 </div>
 
 <ul *ngIf="showInput">
