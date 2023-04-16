@@ -12,7 +12,10 @@ export const scheduledAnalysis = functions
   })
 
 export const analyze = functions
-  .runWith({secrets: ["OPANAI_KEY"]})
+  .runWith({
+    secrets: ["OPANAI_KEY"],
+    maxInstances: 2,
+  })
   .https.onCall(async (data, context) => {
     const articles = await fetchLatestNews();
     const openAiResponse = await fetchOpenAiAnalysis(articles)
