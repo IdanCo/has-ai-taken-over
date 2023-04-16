@@ -7,13 +7,13 @@ import {OpenAiResponse} from "./types/openai-response";
 import {AnalysisData} from "./types/analysis-data";
 import {Parser} from "xml2js";
 import {GoogleNewsArticle} from "./types/google-news-rss";
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from "firebase/firestore";
 
 const firestore = new Firestore.Firestore();
 
 export const scheduledAnalysis = functions
   .runWith({secrets: ["OPANAI_KEY"]})
-  .pubsub.schedule('every 1 minute').onRun(async (context) => {
+  .pubsub.schedule("every 1 minute").onRun(async (context) => {
     const articles = await fetchLatestNews();
     const openAiResponse = await fetchOpenAiAnalysis(articles)
     await saveAnalysis(articles, openAiResponse);
@@ -78,7 +78,7 @@ async function fetchOpenAiAnalysis(articles: GoogleNewsArticle[]) {
   console.timeEnd("openAIApiCall");
 
   const messageContent = aiResponse.data.choices[0].message?.content;
-  if (!messageContent) throw new Error('cant fetch OpenAI response');
+  if (!messageContent) throw new Error("cant fetch OpenAI response");
   logger.info("parsing messageContent:", messageContent);
 
   let openAiResponse: OpenAiResponse = { result: false, reasoning: "" };
