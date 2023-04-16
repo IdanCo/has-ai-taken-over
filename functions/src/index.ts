@@ -7,13 +7,12 @@ import {OpenAiResponse} from "./types/openai-response";
 import {AnalysisData} from "./types/analysis-data";
 import {Parser} from "xml2js";
 import {GoogleNewsArticle} from "./types/google-news-rss";
-import { Timestamp } from "firebase/firestore";
 
 const firestore = new Firestore.Firestore();
 
 export const scheduledAnalysis = functions
   .runWith({secrets: ["OPANAI_KEY"]})
-  .pubsub.schedule("every 1 minute").onRun(async (context) => {
+  .pubsub.schedule("every 1 minutes").onRun(async (context) => {
     const articles = await fetchLatestNews();
     const openAiResponse = await fetchOpenAiAnalysis(articles)
     await saveAnalysis(articles, openAiResponse);
@@ -95,13 +94,15 @@ async function fetchOpenAiAnalysis(articles: GoogleNewsArticle[]) {
 async function saveAnalysis(articles: GoogleNewsArticle[], openAiResponse: OpenAiResponse) {
   const date = new Date();
   date.setSeconds(date.getSeconds() + 86400);
-  const tomorrowTimestamp = Timestamp.fromDate(date);
+  const tomorrowTimestamp = Firestore.Timestamp.fromDate(date);
 
   // Save the OpenAI response and headlines to Firestore
   const analysisData: AnalysisData = {
     articles,
     openAiResponse,
-    timestamp: Timestamp.now(),
+    // @ts-ignore
+    timestamp: Firestore.Timestamp.now(),
+    // @ts-ignore
     removeAt: tomorrowTimestamp,
   };
 
