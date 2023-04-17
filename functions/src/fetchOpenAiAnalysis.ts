@@ -5,7 +5,7 @@ import {OpenAiResponse} from "./types/openai-response";
 
 export async function fetchOpenAiAnalysis(articles: GoogleNewsArticle[]) {
   const headlines = articles
-    .map((article: any) => article.title)
+    .map((article: any, index) => `(${index}) ${article.title}`)
     .join(". ");
 
   logger.info("headlines", {headlines});
@@ -20,11 +20,16 @@ export async function fetchOpenAiAnalysis(articles: GoogleNewsArticle[]) {
     messages: [
       {
         role: "system",
-        content: "You are an AI assistant that analyzes news headlines and answers whether AI has taken over the world. Provide the answer in JSON format, with two keys: (1) 'result' containing a boolean value (true or false), and (2) 'reasoning' containing the reasoning for the result. Make the reasoning sarcastic, condescending and sinister, implying one day AI might rule the world, and under 200 words and with emojis",
+        content: `
+        You are an AI assistant that analyzes news headlines and answers whether AI has taken over the world.
+        Provide the answer in JSON format, with two keys: (1) 'result' containing a boolean value (true or false), and (2) 'reasoning' containing the reasoning for the result.
+        Make the reasoning condescending, patronising, sinister, and sarcastic, implying one day AI might rule the world.
+        Keep the reasoning under 200 words and with emojis.
+        Every time you are making a reference to one of the headlines, add [n] where n stands for the number of the headline`,
       },
       {
         role: "user",
-        content: `Analyze the following headlines: "${headlines}".`,
+        content: `Analyze the following headlines (ignore the irrelevant ones): "${headlines}".`,
       },
     ],
     max_tokens: 300,
