@@ -5,7 +5,7 @@ import {OpenAiResponse} from "./types/openai-response";
 
 export async function fetchOpenAiAnalysis(articles: GoogleNewsArticle[]) {
   const headlines = articles
-    .map((article: any, index) => `(${index}) ${article.title}`)
+    .map((article: any, index) => `(${index + 1}) ${article.title}`)
     .join(". ");
 
   logger.info("headlines", {headlines});

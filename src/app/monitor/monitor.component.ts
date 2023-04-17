@@ -44,6 +44,16 @@ export class MonitorComponent implements OnInit {
     location.reload();
   }
 
+  async onManualFetch() {
+    this.isFinished = false;
+    this.isLoading = true;
+    this.analysis = undefined;
+    this.headlines = undefined;
+
+    this.analysis = await this.fetchFreshAnalysis();
+    this.headlines = this.analysis?.articles.map(a => this.convertArticleToHeadline(a));
+  }
+
   async fetchCachedAnalysis() {
     const now = Date.now();
     const oneHourAgo = now - 3600 * 1000; // Subtract one hour (3600 seconds) in milliseconds
@@ -70,9 +80,6 @@ export class MonitorComponent implements OnInit {
   }
 
   async fetchFreshAnalysis() {
-    this.isLoading = true;
-    this.analysis = undefined;
-
     const analyze = httpsCallableData<unknown, AnalysisData>(this.functions, 'analyze');
     return analyze({ }).toPromise();
   }
