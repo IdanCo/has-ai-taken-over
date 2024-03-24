@@ -5,7 +5,7 @@ import {saveAnalysis} from "./saveAnalysis";
 
 export const scheduledAnalysis = functions
   .runWith({secrets: ["OPANAI_KEY"]})
-  .pubsub.schedule("every 1 minutes").onRun(async (context) => {
+  .pubsub.schedule("every 1 hour").onRun(async (context) => {
     const articles = await fetchLatestNews();
     const openAiResponse = await fetchOpenAiAnalysis(articles)
     await saveAnalysis(articles, openAiResponse);
